@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chore Test App</title>
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .progress {
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    .chore {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #f7f7f7;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .chore.done span {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .reset {
+      width: 100%;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1>Chore Board</h1>
+    <div class="progress" id="progress"></div>
+
+    <div id="choreList"></div>
+
+    <div class="add-row">
+      <input id="newChore" placeholder="Add a chore..." />
+      <button onclick="addChore()">Add</button>
+    </div>
+
+    <button class="reset" onclick="resetChores()">Reset Today</button>
+  </div>
+
+  <script>
+    let chores = [
+      { name: "Kitchen", done: false },
+      { name: "Laundry", done: false },
+      { name: "Take trash out", done: false },
+      { name: "Vacuum", done: false },
+      { name: "Feed dog", done: false }
+    ];
+
+    function render() {
+      const list = document.getElementById("choreList");
+      const progress = document.getElementById("progress");
+
+      list.innerHTML = "";
+
+      chores.forEach((chore, index) => {
+        const item = document.createElement("div");
+        item.className = "chore" + (chore.done ? " done" : "");
+
+        item.innerHTML = `
+          <input
+            class="check"
+            type="checkbox"
+            ${chore.done ? "checked" : ""}
+          />
+          <span>${chore.name}</span>
+        `;
+
+        item.onclick = () => {
+          chores[index].done = !chores[index].done;
+          render();
+        };
+
+        list.appendChild(item);
+      });
+
+      const completed = chores.filter(c => c.done).length;
+      progress.textContent = `${completed} of ${chores.length} complete`;
+    }
+
+    function addChore() {
+      const input = document.getElementById("newChore");
+      const name = input.value.trim();
+
+      if (!name) return;
+
+      chores.push({ name, done: false });
+      input.value = "";
+      render();
+    }
+
+    function resetChores() {
+      chores.forEach(chore => chore.done = false);
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
